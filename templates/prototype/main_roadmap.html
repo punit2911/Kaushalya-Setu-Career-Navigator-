@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Developer Roadmap</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .roadmap-tree {
+        position: relative;
+        padding-left: 40px;
+      }
+
+      .roadmap-tree::before {
+        content: '';
+        position: absolute;
+        left: 20px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(180deg, #00c6ff, #0072ff);
+      }
+
+      .roadmap-title {
+        margin-bottom: 40px;
+        padding-left: 30px;
+        position: relative;
+      }
+
+      .roadmap-title::before {
+        content: '';
+        position: absolute;
+        left: -25px;
+        top: 20px;
+        width: 25px;
+        height: 2px;
+        background: linear-gradient(90deg, #00c6ff, #0072ff);
+      }
+
+      h1 {
+        background: linear-gradient(90deg, #0072ff, #00c6ff);
+        -webkit-background-clip: text;
+        color: transparent;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .skill-branch {
+        margin-left: 40px;
+        padding-left: 20px;
+        border-left: 2px solid rgba(0, 198, 255, 0.5);
+        margin-top: 10px;
+        position: relative;
+      }
+
+      .skill-branch::before {
+        content: '';
+        position: absolute;
+        left: -25px;
+        top: 10px;
+        width: 15px;
+        height: 15px;
+        background: radial-gradient(circle, #00c6ff 0%, #0072ff 100%);
+        border-radius: 50%;
+      }
+
+      .skill-item {
+        padding: 10px;
+        background-color: #1a1a2e;
+        border-radius: 10px;
+        color: #f0f0f0;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, background-color 0.3s ease;
+      }
+
+      .skill-item:hover {
+        background-color: #162447;
+        transform: translateX(5px);
+      }
+
+      .learn-more {
+        margin-top: 5px;
+        padding: 8px 12px;
+        font-size: 12px;
+        background: linear-gradient(90deg, #0072ff, #00c6ff);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .learn-more svg {
+        margin-left: 5px;
+        transition: transform 0.3s ease;
+      }
+
+      .learn-more:hover {
+        background: linear-gradient(90deg, #00c6ff, #0072ff);
+      }
+
+      .learn-more:hover svg {
+        transform: translateX(5px);
+      }
+
+      p {
+        color: #f0f0f0;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+
+      /* Modal styles */
+      #learnMoreModal {
+        backdrop-filter: blur(5px);
+      }
+
+      .modal-content {
+        background: linear-gradient(90deg, #1a1a2e, #3a3a6d);
+        border-radius: 10px;
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      #modalTitle {
+        color: #00c6ff;
+      }
+
+      #modalContent {
+        background-color: #2d2d3b;
+        color: #e0e0e0;
+      }
+
+      .modal-close {
+        color: #f0f0f0;
+        transition: color 0.3s ease;
+      }
+
+      .modal-close:hover {
+        color: #00c6ff;
+      }
+      .modal-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+      
+      .evaluate-btn, .explore-btn {
+        display: inline-block;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: bold;
+        border-radius: 5px;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+      }
+      
+      .evaluate-btn {
+        background-color: #4CAF50; /* Matching theme color */
+        color: white;
+      }
+      
+      .explore-btn {
+        background-color: #008CBA; /* Matching theme color */
+        color: white;
+      }
+      
+      .evaluate-btn:hover {
+        background-color: #45a049;
+      }
+      
+      .explore-btn:hover {
+        background-color: #007bb5;
+      }
+      
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <main>
+      <pre id="response" style="display:none;"></pre>
+    </main>
+    <div class="container mx-auto p-6">
+      <h1 id="title" class="text-3xl font-bold mb-4"></h1>
+      <p id="description" class="text-gray-600 mb-6"></p>
+      <p id="totalTime" class="text-gray-800 mb-10 font-semibold"></p>
+
+      <ol
+        id="roadmap"
+        class="relative border-l border-gray-200 dark:border-gray-700 roadmap-tree"
+      ></ol>
+    </div>
+
+    <!-- Modal -->
+    <div
+      id="learnMoreModal"
+      class="fixed inset-0 hidden items-center justify-center bg-gray-800 bg-opacity-75"
+    >
+      <div class="bg-white rounded-lg p-8 max-w-4xl mx-auto mt-20 modal-content">
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-bold" id="modalTitle"></h2>
+          <button id="closeModal" class="modal-close text-gray-500 hover:text-gray-800">
+            &times;
+          </button>
+        </div>
+        <div
+          id="modalContent"
+          class="bg-gray-100 p-4 rounded-lg mt-4 h-48 overflow-y-auto"
+        ></div>
+      </div>
+    </div>
+
+    
+
+    <script>
+      // Function to generate roadmap items
+      function generateRoadmap(data) {
+        document.getElementById("title").textContent = data.title;
+        document.getElementById("description").textContent = data.description;
+        document.getElementById("totalTime").textContent = `Total Time: ${data.totalTime}`;
+    
+        const roadmap = document.getElementById("roadmap");
+        roadmap.innerHTML = ''; // Clear previous roadmap if any
+    
+        data.roadmap.forEach((item, index) => {
+          const titleBox = document.createElement("div");
+          titleBox.classList.add("roadmap-title");
+    
+          const title = document.createElement("h3");
+          title.textContent = item.name;
+          titleBox.appendChild(title);
+    
+          // Creating skill branches
+          item.skills.forEach((skill, skillIndex) => {
+            const skillBranch = document.createElement("div");
+            skillBranch.classList.add("skill-branch");
+    
+            const skillItem = document.createElement("div");
+            skillItem.classList.add("skill-item");
+            skillItem.textContent = `${skill.name}: ${skill.description} (Time: ${skill.time})`;
+            
+            const link = document.createElement("a");
+            link.href = "#";
+            link.classList.add("learn-more");
+            link.dataset.skillIndex = skillIndex; // Save skill index
+            link.dataset.parentIndex = index; // Save parent index
+            link.innerHTML = `Learn more <svg class="w-3 h-3 ml-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>`;
+            
+            skillBranch.appendChild(skillItem);
+            skillBranch.appendChild(link);
+            titleBox.appendChild(skillBranch);
+          });
+    
+          roadmap.appendChild(titleBox);
+        });
+    
+        document.querySelectorAll(".learn-more").forEach((button) => {
+          button.addEventListener("click", (event) => {
+            event.preventDefault();
+            const skillIndex = event.currentTarget.dataset.skillIndex;
+            const parentIndex = event.currentTarget.dataset.parentIndex;
+            openModal(data.roadmap[parentIndex].skills[skillIndex]);
+          });
+        });
+      }
+    
+      // Function to open modal with specific skill data
+      function openModal(skill) {
+        document.getElementById("modalTitle").textContent = skill.name;
+        const skillContent = `
+    <p><strong>Description:</strong> ${skill.description} <br> 
+    <strong>Time:</strong> ${skill.time}</p>
+    <hr>
+    <div class="modal-buttons">
+      <a href="test/${skill.name}/" class="evaluate-btn">Evaluate this skill</a>
+      <a href="courses_recommended/${skill.name}/" class="explore-btn">Explore courses</a>
+    </div>`;
+        document.getElementById("modalContent").innerHTML = skillContent;
+        document.getElementById("learnMoreModal").classList.remove("hidden");
+      }
+    
+      // Close modal functionality
+      document.getElementById("closeModal").addEventListener("click", () => {
+        document.getElementById("learnMoreModal").classList.add("hidden");
+      });
+    </script>
+    
+  </body>
+</html>

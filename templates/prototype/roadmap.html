@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Roadmap generation page</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Fascinate&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Additional custom styles */
+      .hidden {
+        display: none;
+      }
+
+      #user-logo {
+        background-color: white;
+        padding: 7px;
+        border-radius: 80px;
+      }
+
+      .custom-flex {
+        flex-direction: column;
+        justify-content: center !important;
+        align-items: center;
+        margin: 0; /* Removed spacing */
+      }
+
+      .head1 {
+        font-size: 1.5rem;
+        color: white; /* Text color */
+      }
+
+      #prompt {
+        border: 2px solid #3a3a3a; /* Dark gray border for contrast */
+        border-radius: 5px;
+        background-color: #2d2d2d; /* Slightly lighter background */
+        color: white;
+        padding: 8px;
+        font-family: monospace; /* Display response in mono-spaced font */
+      }
+
+      #submit-button {
+        background: linear-gradient(to right, #202938 0%, #202938 100%); /* Gradient background */
+        padding: 10px;
+        border-radius: 5px;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      #submit-button:hover {
+        background: linear-gradient(to right, #1e3a8a 0%, #1e3a8a 100%); /* Lighter gradient on hover */
+      }
+
+      #response {
+        border: 1px solid #3a3a3a; /* Dark gray border for contrast */
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 1rem;
+        background-color: white
+        color: white;
+        font-family: monospace; /* Display response in mono-spaced font */
+      }
+
+      .form-class {
+        background-color: #1a1a1a; /* Match navbar background */
+        padding: 2rem;
+        border-top: 1px solid grey;
+        border-bottom-left-radius: 8px; /* Rounded lower left corner */
+        border-bottom-right-radius: 8px; /* Rounded lower right corner */
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="custom-color-1">
+      {% include 'prototype/navbar.html' %}
+    </header>
+
+    <main>
+      <div class="custom-flex form-class">
+        <h1 class="head1 font-bold animate-slide-in">Generate Roadmap</h1>
+        <div class="mt-6 flex max-w-md gap-x-4">
+          <form id="prompt-form" class="flex flex-col gap-y-4">
+            {% csrf_token %}
+            <label for="prompt" class="text-white">Enter your prompt:</label>
+            <textarea id="prompt" name="prompt" rows="3" cols="100"></textarea>
+            <button type="submit" id="submit-button">Process Prompt</button>
+          </form>
+        </div>
+      </div>
+    </main>
+    {% include 'prototype/main_roadmap.html' %} 
+    {% include 'prototype/previous-roadmap-element.html' %}
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const productButton = document.getElementById("product-button");
+        const productMenu = document.getElementById("product-menu");
+
+        productButton.addEventListener("click", () => {
+          // Toggle the menu
+          if (productMenu.classList.contains("hidden")) {
+            productMenu.classList.remove("hidden");
+          } else {
+            productMenu.classList.add("hidden");
+          }
+        });
+
+        // Close the menu when clicking outside of it
+        document.addEventListener("click", (event) => {
+          if (
+            !productMenu.contains(event.target) &&
+            !productButton.contains(event.target)
+          ) {
+            productMenu.classList.add("hidden");
+          }
+        });
+      });
+    </script>
+
+    <script>
+      const form = document.getElementById("prompt-form");
+      const responseEl = document.getElementById("response");
+    
+      form.addEventListener("submit", (event) => {
+        event.preventDefault(); // Prevent default form submission
+    
+        const prompt = document.getElementById("prompt").value;
+    
+        if (!prompt) {
+          alert("Please enter a prompt!");
+          return;
+        }
+    
+        const requestData = {
+          prompt: prompt,
+          // Add any other required fields here
+        };
+    
+        fetch("http://127.0.0.1:8000/process_prompt/", {
+          method: "POST",
+          body: JSON.stringify(requestData),
+          headers: { "Content-Type": "application/json" },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Parse the response coming from API
+            const parsedResponse = JSON.parse(data.response);
+    
+            // Call the function to generate roadmap with the dynamic data
+            generateRoadmap(parsedResponse);
+    
+            // Optional: display raw response in a styled preformatted block
+            responseEl.innerHTML = "";
+            const formattedResponse = document.createElement("pre");
+            formattedResponse.style.backgroundColor = "#f4f4f4";
+            formattedResponse.style.padding = "15px";
+            formattedResponse.style.borderRadius = "5px";
+            formattedResponse.style.overflowX = "auto";
+            formattedResponse.style.whiteSpace = "pre-wrap";
+            formattedResponse.style.fontFamily = "monospace";
+            formattedResponse.textContent = JSON.stringify(parsedResponse, null, 2);
+    
+            responseEl.appendChild(formattedResponse);
+    
+            // Save prompt and response as needed
+            const saveData = {
+              prompt: prompt,
+              response: JSON.stringify(parsedResponse),
+            };
+    
+            fetch("http://127.0.0.1:8000/save_prompt/", {
+              method: "POST",
+              body: JSON.stringify(saveData),
+              headers: { "Content-Type": "application/json" },
+            })
+              .then((saveResponse) => saveResponse.json())
+              .then((saveResult) => {
+                console.log("Save result:", saveResult);
+              })
+              .catch((saveError) => {
+                console.error("Error saving data:", saveError);
+              });
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            responseEl.textContent = "Error processing prompt.";
+          });
+      });
+    </script>
+    
+
+    <script>
+      const saveData = {
+        prompt: prompt,
+        response: responseEl.textContent,
+      };
+      console.log(saveData);
+    </script>
+
+    <script>
+      const prevRoadmapLinks = document.querySelectorAll(".prev-roadmap-link");
+
+      prevRoadmapLinks.forEach((link) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault(); // Prevent default link action
+
+          // Get the ID from the data-id attribute (assuming the link has it)
+          const id = link.dataset.id;
+
+          // Construct the URL using the ID
+          const url = `http://127.0.0.1:8000/get_roadmap/${id}/`;
+
+          fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+              const parsedResponse = data;
+              generateRoadmap(parsedResponse);
+              responseEl.textContent = ""; // Clear existing content
+              //responseEl.textContent = JSON.stringify(data.response, null, 2); // Display fetched data
+              const formattedResponse = document.createElement("pre");
+              formattedResponse.style.backgroundColor = "#f4f4f4";
+              formattedResponse.style.padding = "15px";
+              formattedResponse.style.borderRadius = "5px";
+              formattedResponse.style.overflowX = "auto";
+              formattedResponse.style.whiteSpace = "pre-wrap";
+              formattedResponse.style.fontFamily = "monospace";
+              formattedResponse.textContent = JSON.stringify(data, null, 2);
+
+              responseEl.appendChild(formattedResponse);
+            })
+            .catch((error) => {
+              console.error("Error fetching roadmap:", error);
+              responseEl.textContent = "Error fetching roadmap.";
+            });
+        });
+      });
+    </script>
+
+    <script>
+      const deleteButtons = document.querySelectorAll(
+        ".modal-footer .btn-danger"
+      );
+
+      deleteButtons.forEach((deleteButton) => {
+        deleteButton.addEventListener("click", (event) => {
+          // Get the roadmap ID directly from the button's ID:
+          const roadmapId = deleteButton.id.split("-")[1];
+          // Construct the URL using the extracted roadmap ID
+          const url = `http://127.0.0.1:8000/get_roadmap/${roadmapId}/`;
+
+          fetch(url, {
+            method: "DELETE",
+          })
+            .then((response) => {
+              if (response.status === 204) {
+                // Successful deletion:
+                const modal = deleteButton.closest(".modal");
+                const modalEvent = new Event("hidden.bs.modal");
+                modal.dispatchEvent(modalEvent); // Trigger Bootstrap's modal hide event
+
+                // Consider user experience before reloading:
+                const confirmReload = confirm(
+                  "Roadmap deleted successfully. Reload the page to see the updated list?"
+                );
+
+                if (confirmReload) {
+                  // User confirms reload, proceed:
+                  window.location.reload();
+                } else {
+                  // User cancels reload, display success message (optional):
+                  alert("Roadmap deleted successfully.");
+                }
+              } else {
+                alert("Error deleting roadmap. Please try again.");
+              }
+            })
+            .catch((error) => {
+              console.error("Error deleting roadmap:", error);
+              alert("An error occurred. Please try again.");
+            });
+        });
+      });
+    </script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+      integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

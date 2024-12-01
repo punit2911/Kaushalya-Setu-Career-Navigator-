@@ -1,0 +1,84 @@
+<style>
+    .main-logo {
+        font-family: "Caveat", cursive;
+        font-optical-sizing: auto;
+        font-size: 2rem;
+        font-weight: bold;
+        color: yellow;
+    }
+    #hindi-logo {
+        font-family: "Caveat", cursive;
+        font-size: 1.5rem;
+    }
+    .font-color-white {
+        color: white !important;
+    }
+    .navbar-shadow {
+        box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.3), 0 2px 4px -2px rgba(255, 255, 255, 0.2);
+    }
+    .nav-glow {
+        text-shadow: 0 0 2px rgba(255, 255, 255, 0.8), 0 0 12px rgba(255, 255, 255, 0.6);
+    }
+    .user-icon-circle {
+        background-color: white;
+        border-radius: 50%;
+        padding: 0.5rem;
+    }
+</style>
+
+<nav class="mx-auto flex items-center justify-between p-6 lg:px-8 font-color-white navbar-shadow bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900" aria-label="Global">
+    <div class="flex lg:flex-1">
+        <a href="#" class="-m-1.5 p-1.5">
+            <span class="sr-only">Your Company</span>
+            <span class="main-logo nav-glow">Kaushalya<span id="hindi-logo" class="nav-glow"> सेतु</span></span>
+        </a>
+    </div>
+    <div class="flex lg:hidden">
+        <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white">
+            <span class="sr-only">Open main menu</span>
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+        </button>
+    </div>
+    <div class="hidden lg:flex lg:gap-x-12 lg:flex-1 lg:justify-center">
+        <div class="relative">
+            <button type="button" class="flex items-center gap-x-1 text-sm font-semibold leading-6 text-white hover:text-yellow-300 transition ease-in-out duration-300" aria-expanded="false" id="product-button">
+                Product
+                <svg class="h-5 w-5 flex-none text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                </svg>
+            </button>
+
+            <!-- 'Product' flyout menu -->
+            <div id="product-menu" class="hidden absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-gray-900 shadow-lg ring-1 ring-gray-700">
+                <div class="p-4">
+                    <div class="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-800 transition">
+                        <div class="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-800 group-hover:bg-gray-700">
+                            <svg class="h-6 w-6 text-white group-hover:text-yellow-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" />
+                            </svg>
+                        </div>
+                        <div class="flex-auto">
+                            <a href="#" class="block font-semibold text-white">
+                                Job Market Analytics
+                                <span class="absolute inset-0"></span>
+                            </a>
+                            <p class="mt-1 text-gray-400">Get a better understanding of current job trends</p>
+                        </div>
+                    </div>
+                    <!-- other menu items... -->
+                </div>
+            </div>
+        </div>
+        <a href="#" class="text-sm font-semibold leading-6 text-white hover:text-yellow-300 transition ease-in-out duration-300">Company</a>
+        <a href="#" class="text-sm font-semibold leading-6 text-white hover:text-yellow-300 transition ease-in-out duration-300">Careers</a>
+        <a href="#" class="text-sm font-semibold leading-6 text-white hover:text-yellow-300 transition ease-in-out duration-300">Pricing</a>
+    </div>
+    <div class="flex items-center space-x-4">
+        <div class="user-icon-circle">
+            <i class="fa-solid fa-user text-2xl text-gray-900"></i>
+        </div>
+    </div>
+</nav>
